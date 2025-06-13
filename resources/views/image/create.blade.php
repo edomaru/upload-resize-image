@@ -2,16 +2,19 @@
     <div class="w-2/3 mx-auto">
         <div class="my-7 flex justify-between items-center">
             <h1 class="text-3xl font-bold">Upload images</h1>
-            <a href="{{ route('images.create') }}" class="px-4 py-3 bg-white hover:bg-blue-700 text-blue-700 border border-blue-600 hover:text-white rounded-full transition">Back to all images</a>
+            <a href="{{ route('images.index') }}" class="px-4 py-3 bg-white hover:bg-blue-700 text-blue-700 border border-blue-600 hover:text-white rounded-full transition">Back to all images</a>
         </div>
         
         <form action="{{ route('images.store') }}" enctype="multipart/form-data" method="POST" class="bg-white p-6 rounded-xl shadow">
             @csrf
             <div class="mb-4">
-                <label for="images" class="block text-gray-700 font-medium mb-2">Choose images</label>
-                <input type="file" id="images" name="images[]" multiple accept="image/*">
+                <label for="images" class="flex items-center justify-between w-full px-4 py-3 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                    <span id="file-name" class="text-gray-500 text-sm truncate">No file chosen</span>
+                    <span class="bg-gray-500 text-white hover:bg-gray-600 px-3 py-1 rounded-md transition">Choose file</span>
+                </label>
+                <input type="file" id="images" class="hidden" onchange="updateFileNames(event)" name="images[]" multiple accept="image/*">
                 @error('images')
-                    <div style="color: red">{{ $message }}</div>
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
             <div class="flex justify-end space-x-3 mt-7">
@@ -20,4 +23,20 @@
             </div>
         </form>
     </div>
+    @push('scripts')
+        <script>
+            function updateFileNames(event) {
+                const files = event.target.files;
+                const fileNameSpan = document.getElementById('file-name');
+
+                if (files.length === 0) {
+                    fileNameSpan.textContent = "No file chosen";
+                } else if (files.length === 1) {
+                    fileNameSpan.textContent = files[0].name;
+                } else {
+                    fileNameSpan.textContent = `${files.length} file(s) chosen`;
+                }
+            }
+        </script>
+    @endpush
 </x-app>

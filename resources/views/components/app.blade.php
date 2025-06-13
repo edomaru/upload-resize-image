@@ -9,5 +9,6 @@
     <div class="w-4/5 mx-auto">
         {{ $slot }}
     </div>
+    @stack('scripts')
   </body>
 </html>
