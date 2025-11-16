@@ -21,20 +21,17 @@ class ImageController extends Controller
     {
         $folder = "images/" . date("Y/m");
 
-        foreach($request->file('images') as $imageFile) {
-            $fielName = $this->makeUniqueFilename($imageFile);
-            $image = $this->resizeImage($imageFile);
-            Storage::disk('public')->put($path = $folder . '/' . $fielName, (string) $image->encode());
+        $imageFile = $request->file('image');
+        $fielName = $this->makeUniqueFilename($imageFile);
+        $image = $this->resizeImage($imageFile);
+        Storage::disk('public')->put($path = $folder . '/' . $fielName, (string) $image->encode());
 
-            Media::create([
-                'file_name' => $imageFile->getClientOriginalName(),
-                'mime_type' => $imageFile->getMimeType(),
-                'size' => $imageFile->getSize(),
-                'path' => $path
-            ]);
-        }
-
-        return to_route('images.index');
+        return Media::create([
+            'file_name' => $imageFile->getClientOriginalName(),
+            'mime_type' => $imageFile->getMimeType(),
+            'size' => $imageFile->getSize(),
+            'path' => $path
+        ]);
     }
 
     protected function resizeImage(UploadedFile $imageFile)
